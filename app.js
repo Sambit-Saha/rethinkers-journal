@@ -1,0 +1,1 @@
+console.log("The Rethinkers Journal Loaded");
