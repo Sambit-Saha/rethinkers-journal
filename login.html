@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rethinkers Login</title>
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.box {
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 10px;
+    width: 320px;
+    text-align: center;
+}
+
+h2 {
+    color: white;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #38bdf8;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0ea5e9;
+}
+
+p {
+    color: #f87171;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Login</h2>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Login</button>
+
+    <p id="msg"></p>
+</div>
+
+<script type="module">
+
+// Firebase imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+// 🔴 YOUR FIREBASE CONFIG (PASTE YOURS HERE)
+const firebaseConfig = {
+  apiKey: "AIzaSyADuJpYlXLuX8dfmX2KSnlO0KJiqQ8Ba80",
+  authDomain: "rethinkers-journal.firebaseapp.com",
+  projectId: "rethinkers-journal",
+  storageBucket: "rethinkers-journal.firebasestorage.app",
+  messagingSenderId: "842949343385",
+  appId: "1:842949343385:web:adc684cddcdad6f4d72008",
+  measurementId: "G-2ML00DY6MK"
+};
+
+// init firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+
+// SIGN UP
+window.signup = function () {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+        document.getElementById("msg").style.color = "lightgreen";
+        document.getElementById("msg").innerText = "Account created!";
+    })
+    .catch(err => {
+        document.getElementById("msg").innerText = err.message;
+    });
+}
+
+
+// LOGIN
+window.login = function () {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+        window.location.href = "dashboard.html";
+    })
+    .catch(err => {
+        document.getElementById("msg").innerText = err.message;
+    });
+}
+
+</script>
+
+</body>
+</html>
