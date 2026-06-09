@@ -2,36 +2,277 @@
 <html>
 <head>
 <title>Dashboard</title>
+
 <style>
 body {
     font-family: Arial;
     background: #0f172a;
     color: white;
-    text-align: center;
-    padding-top: 100px;
+    margin: 0;
 }
 
-button {
-    padding: 10px 20px;
-    background: red;
+/* HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: #111827;
+}
+
+.left {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* BUTTONS */
+button, a {
+    padding: 8px 12px;
     border: none;
-    color: white;
+    border-radius: 6px;
     cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login {
+    background: #27ae60;
+    color: white;
+}
+
+.post {
+    background: #2980b9;
+    color: white;
+}
+
+.logout {
+    background: red;
+    color: white;
+}
+
+/* AVATAR */
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* CONTENT */
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    background: #1f2937;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.tag {
+    color: #27ae60;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+form input, form textarea, form select {
+    width: 100%;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+form button {
+    background: #27ae60;
+    color: white;
+    margin-top: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Welcome to Rethinkers Dashboard</h1>
-<p>You are logged in successfully 🎉</p>
+<!-- HEADER -->
+<header>
+    <div class="left">Rethinkers Dashboard</div>
 
-<button onclick="logout()">Logout</button>
+    <div class="right" id="nav-right">
+        <a href="login.html" class="login" id="loginBtn">Login</a>
+        <button class="post" id="postBtn" style="display:none;">Post</button>
+        <div class="avatar" id="avatar" style="display:none;"></div>
+        <button class="logout" id="logoutBtn" style="display:none;">Logout</button>
+    </div>
+</header>
 
-<script>
-function logout() {
-    window.location.href = "login.html";
-}
+<!-- CONTENT -->
+<div class="container">
+
+    <h2>Welcome to Rethinkers Journal 🎉</h2>
+    <p>Science. Logic. Action.</p>
+
+    <hr style="margin:20px 0;">
+
+    <!-- POST FORM -->
+    <div id="publish">
+        <h3>Create Post</h3>
+
+        <form id="submission-form">
+            <select id="sub-category" required>
+                <option value="Research">Research</option>
+                <option value="Opinion">Opinion</option>
+                <option value="Field Report">Field Report</option>
+            </select>
+
+            <input type="text" id="sub-author" placeholder="Author Name" required>
+            <input type="text" id="sub-title" placeholder="Title" required>
+            <textarea id="sub-content" placeholder="Write your post..." required></textarea>
+
+            <button type="submit">Publish</button>
+        </form>
+    </div>
+
+    <hr style="margin:20px 0;">
+
+    <!-- POSTS -->
+    <h3>Live Posts</h3>
+    <div id="articles-container"></div>
+
+</div>
+
+
+<!-- FIREBASE -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+// 🔴 YOUR FIREBASE CONFIG (REPLACE THIS)
+const firebaseConfig = {
+  apiKey: "AIzaSyADuJpYlXLuX8dfmX2KSnlO0KJiqQ8Ba80",
+  authDomain: "rethinkers-journal.firebaseapp.com",
+  projectId: "rethinkers-journal",
+  storageBucket: "rethinkers-journal.firebasestorage.app",
+  messagingSenderId: "842949343385",
+  appId: "1:842949343385:web:adc684cddcdad6f4d72008"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+// UI ELEMENTS
+const loginBtn = document.getElementById("loginBtn");
+const postBtn = document.getElementById("postBtn");
+const avatar = document.getElementById("avatar");
+const logoutBtn = document.getElementById("logoutBtn");
+const articlesContainer = document.getElementById("articles-container");
+
+let currentUser = null;
+
+
+// AUTH STATE
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUser = user;
+
+        loginBtn.style.display = "none";
+        postBtn.style.display = "inline-block";
+        logoutBtn.style.display = "inline-block";
+
+        avatar.style.display = "flex";
+        avatar.textContent = user.email.charAt(0).toUpperCase();
+
+    } else {
+        currentUser = null;
+
+        loginBtn.style.display = "inline-block";
+        postBtn.style.display = "none";
+        logoutBtn.style.display = "none";
+
+        avatar.style.display = "none";
+    }
+});
+
+
+// LOGOUT
+logoutBtn.onclick = () => {
+    signOut(auth);
+};
+
+
+// SCROLL TO POST FORM
+postBtn.onclick = () => {
+    document.getElementById("publish").scrollIntoView({ behavior: "smooth" });
+};
+
+
+// SUBMIT POST
+document.getElementById("submission-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!currentUser) {
+        alert("Please login first");
+        return;
+    }
+
+    const category = document.getElementById("sub-category").value;
+    const author = document.getElementById("sub-author").value;
+    const title = document.getElementById("sub-title").value;
+    const content = document.getElementById("sub-content").value;
+
+    await addDoc(collection(db, "posts"), {
+        category,
+        author,
+        title,
+        content,
+        email: currentUser.email,
+        time: Date.now()
+    });
+
+    e.target.reset();
+});
+
+
+// LOAD POSTS
+const q = query(collection(db, "posts"), orderBy("time", "desc"));
+
+onSnapshot(q, (snapshot) => {
+    articlesContainer.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+            <div class="tag">${data.category}</div>
+            <h4>${data.title}</h4>
+            <p>${data.content}</p>
+            <small>By ${data.author} | ${data.email}</small>
+        `;
+
+        articlesContainer.appendChild(div);
+    });
+});
+
 </script>
 
 </body>
