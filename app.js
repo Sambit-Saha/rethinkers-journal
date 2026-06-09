@@ -40,7 +40,7 @@ let currentUser = null;
 
 
 // =======================
-// SAFE ELEMENT REFERENCES
+// SAFE UI ELEMENTS
 // =======================
 const loginBtn = document.getElementById("loginBtn");
 const postBtn = document.getElementById("postBtn");
@@ -48,30 +48,33 @@ const logoutBtn = document.getElementById("logoutBtn");
 const avatar = document.getElementById("avatar");
 
 const form = document.getElementById("submission-form");
-const articlesContainer = document.getElementById("articles-container");
+
+// BOTH PAGES SUPPORT
+const dashboardContainer = document.getElementById("articles-container");
+const homeContainer = document.getElementById("posts-container");
 
 
 // =======================
-// AUTH STATE (SAFE)
+// AUTH STATE
 // =======================
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
 
-    if (loginBtn && postBtn && logoutBtn && avatar) {
-        if (user) {
-            loginBtn.style.display = "none";
-            postBtn.style.display = "inline-block";
-            logoutBtn.style.display = "inline-block";
+    if (user) {
+        if (loginBtn) loginBtn.style.display = "none";
+        if (postBtn) postBtn.style.display = "inline-block";
+        if (logoutBtn) logoutBtn.style.display = "inline-block";
 
+        if (avatar) {
             avatar.style.display = "flex";
             avatar.textContent = user.email?.charAt(0).toUpperCase();
-        } else {
-            loginBtn.style.display = "inline-block";
-            postBtn.style.display = "none";
-            logoutBtn.style.display = "none";
-
-            avatar.style.display = "none";
         }
+    } else {
+        if (loginBtn) loginBtn.style.display = "inline-block";
+        if (postBtn) postBtn.style.display = "none";
+        if (logoutBtn) logoutBtn.style.display = "none";
+
+        if (avatar) avatar.style.display = "none";
     }
 });
 
@@ -92,15 +95,13 @@ if (logoutBtn) {
 if (postBtn) {
     postBtn.addEventListener("click", () => {
         const publish = document.getElementById("publish");
-        if (publish) {
-            publish.scrollIntoView({ behavior: "smooth" });
-        }
+        if (publish) publish.scrollIntoView({ behavior: "smooth" });
     });
 }
 
 
 // =======================
-// POST SUBMIT (FIXED - MAIN ISSUE SOLVED)
+// POST SUBMIT (FULL FIXED)
 // =======================
 if (form) {
     form.addEventListener("submit", async (e) => {
@@ -118,7 +119,6 @@ if (form) {
         const title = document.getElementById("sub-title")?.value;
         const content = document.getElementById("sub-content")?.value;
 
-        // SAFETY CHECK (prevents undefined errors like 'sub is not defined')
         if (!category || !author || !title || !content) {
             alert("Please fill all fields");
             return;
@@ -140,7 +140,7 @@ if (form) {
             form.reset();
 
         } catch (err) {
-            console.error("ERROR publishing post:", err);
+            console.error("Firestore write error:", err);
             alert(err.message);
         }
     });
@@ -148,35 +148,38 @@ if (form) {
 
 
 // =======================
-// LIVE POSTS (SAFE)
+// LIVE POSTS (WORKS ON BOTH PAGES)
 // =======================
-if (articlesContainer) {
+const q = query(collection(db, "posts"), orderBy("time", "desc"));
 
-    const q = query(collection(db, "posts"), orderBy("time", "desc"));
+onSnapshot(q, (snapshot) => {
 
-    onSnapshot(q, (snapshot) => {
+    console.log("Live posts updated:", snapshot.size);
 
-        console.log("Live posts updated:", snapshot.size);
+    if (dashboardContainer) dashboardContainer.innerHTML = "";
+    if (homeContainer) homeContainer.innerHTML = "";
 
-        articlesContainer.innerHTML = "";
+    snapshot.forEach((doc) => {
+        const data = doc.data();
 
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-
-            const div = document.createElement("div");
-            div.className = "card";
-
-            div.innerHTML = `
+        const cardHTML = `
+            <div class="card">
                 <span class="tag">${data.category || ""}</span>
                 <h4>${data.title || ""}</h4>
                 <p>${data.content || ""}</p>
                 <small>By ${data.author || "Unknown"} | ${data.email || ""}</small>
-            `;
+            </div>
+        `;
 
-            articlesContainer.appendChild(div);
-        });
+        if (dashboardContainer) {
+            dashboardContainer.innerHTML += cardHTML;
+        }
 
-    }, (error) => {
-        console.error("Firestore read error:", error);
+        if (homeContainer) {
+            homeContainer.innerHTML += cardHTML;
+        }
     });
-}
+
+}, (error) => {
+    console.error("Firestore read error:", error);
+});

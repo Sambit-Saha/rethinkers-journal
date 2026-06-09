@@ -17,10 +17,7 @@
     <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="articles.html">Articles</a></li>
-
-        <!-- NEW BUTTON -->
         <li><a href="#live-posts">Live Posts</a></li>
-
         <li><a href="about.html">About</a></li>
         <li><a href="login.html" class="login-btn">Login</a></li>
     </ul>
@@ -65,11 +62,12 @@
     </div>
 </section>
 
-<!-- NEW: LIVE POSTS SECTION -->
+<!-- LIVE POSTS SECTION -->
 <section id="live-posts" class="featured">
 
     <h2>Live Posts</h2>
 
+    <!-- THIS IS NOW CONTROLLED BY app.js -->
     <div id="posts-container" class="cards"></div>
 
 </section>
@@ -79,58 +77,8 @@
     © 2026 Rethinkers Group | Edited By - Sambit Saha
 </footer>
 
-<!-- FIREBASE (LIVE POSTS ONLY) -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-    getFirestore,
-    collection,
-    query,
-    orderBy,
-    onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const postsContainer = document.getElementById("posts-container");
-
-const q = query(collection(db, "posts"), orderBy("time", "desc"));
-
-onSnapshot(q, (snapshot) => {
-
-    postsContainer.innerHTML = "";
-
-    snapshot.forEach((doc) => {
-        const data = doc.data();
-
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-            <h3>${data.title}</h3>
-            <p>${data.content}</p>
-            <small>By ${data.author} | ${data.category}</small>
-        `;
-
-        postsContainer.appendChild(card);
-    });
-
-});
-
-</script>
-
-<script src="app.js"></script>
+<!-- SINGLE UNIFIED FIREBASE SYSTEM -->
+<script type="module" src="app.js"></script>
 
 </body>
 </html>
