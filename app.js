@@ -11,11 +11,12 @@ import {
     addDoc, 
     query, 
     orderBy, 
-    onSnapshot 
+    onSnapshot,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
-// 🔥 Firebase Config (YOUR PROJECT)
+// 🔥 Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyADuJpYlXLuX8dfmX2KSnlO0KJiqQ8Ba80",
   authDomain: "rethinkers-journal.firebaseapp.com",
@@ -31,101 +32,137 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+let currentUser = null;
 
-// UI ELEMENTS
+
+// =======================
+// SAFE ELEMENT GETTER
+// =======================
 const loginBtn = document.getElementById("loginBtn");
 const postBtn = document.getElementById("postBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const avatar = document.getElementById("avatar");
+
 const articlesContainer = document.getElementById("articles-container");
 const form = document.getElementById("submission-form");
 
-let currentUser = null;
 
-
-// AUTH STATE
+// =======================
+// AUTH STATE (SAFE)
+// =======================
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
 
-    if (user) {
-        loginBtn.style.display = "none";
-        postBtn.style.display = "inline-block";
-        logoutBtn.style.display = "inline-block";
+    if (loginBtn && postBtn && logoutBtn && avatar) {
+        if (user) {
+            loginBtn.style.display = "none";
+            postBtn.style.display = "inline-block";
+            logoutBtn.style.display = "inline-block";
 
-        avatar.style.display = "flex";
-        avatar.textContent = user.email.charAt(0).toUpperCase();
-    } else {
-        loginBtn.style.display = "inline-block";
-        postBtn.style.display = "none";
-        logoutBtn.style.display = "none";
+            avatar.style.display = "flex";
+            avatar.textContent = user.email?.charAt(0).toUpperCase();
+        } else {
+            loginBtn.style.display = "inline-block";
+            postBtn.style.display = "none";
+            logoutBtn.style.display = "none";
 
-        avatar.style.display = "none";
+            avatar.style.display = "none";
+        }
     }
 });
 
 
-// LOGOUT
-logoutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-});
-
-
-// SCROLL TO POST
-postBtn.addEventListener("click", () => {
-    document.getElementById("publish").scrollIntoView({ behavior: "smooth" });
-});
-
-
-// POST SUBMIT
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    if (!currentUser) {
-        alert("Please login first");
-        return;
-    }
-
-    const category = document.getElementById("sub-category").value;
-    const author = document.getElementById("sub-author").value;
-    const title = document.getElementById("sub-title").value;
-    const content = document.getElementById("sub-content").value;
-
-    try {
-        await addDoc(collection(db, "posts"), {
-            category,
-            author,
-            title,
-            content,
-            email: currentUser.email,
-            time: Date.now()
-        });
-
-        form.reset();
-    } catch (err) {
-        console.error("Error writing post:", err);
-    }
-});
-
-
-// LIVE POSTS
-const q = query(collection(db, "posts"), orderBy("time", "desc"));
-
-onSnapshot(q, (snapshot) => {
-    articlesContainer.innerHTML = "";
-
-    snapshot.forEach((doc) => {
-        const data = doc.data();
-
-        const div = document.createElement("div");
-        div.className = "card";
-
-        div.innerHTML = `
-            <span class="tag">${data.category}</span>
-            <h4>${data.title}</h4>
-            <p>${data.content}</p>
-            <small>By ${data.author} | ${data.email}</small>
-        `;
-
-        articlesContainer.appendChild(div);
+// =======================
+// LOGOUT (SAFE)
+// =======================
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+        await signOut(auth);
     });
-});
+}
+
+
+// =======================
+// SCROLL TO POST (SAFE)
+// =======================
+if (postBtn) {
+    postBtn.addEventListener("click", () => {
+        const publishSection = document.getElementById("publish");
+        if (publishSection) {
+            publishSection.scrollIntoView({ behavior: "smooth" });
+        }
+    });
+}
+
+
+// =======================
+// POST SUBMIT (FIXED - MAIN BUG FIX)
+// =======================
+if (form) {
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        console.log("Submit clicked");
+
+        if (!currentUser) {
+            alert("Please login first");
+            return;
+        }
+
+        const category = document.getElementById("sub-category")?.value;
+        const author = document.getElementById("sub-author")?.value;
+        const title = document.getElementById("sub-title")?.value;
+        const content = document.getElementById("sub-content")?.value;
+
+        try {
+            await addDoc(collection(db, "posts"), {
+                category,
+                author,
+                title,
+                content,
+                email: currentUser.email,
+                time: serverTimestamp()
+            });
+
+            console.log("Post published successfully");
+            form.reset();
+
+        } catch (err) {
+            console.error("ERROR publishing post:", err);
+            alert("Failed to publish post: " + err.message);
+        }
+    });
+}
+
+
+// =======================
+// LIVE POSTS (SAFE)
+// =======================
+if (articlesContainer) {
+
+    const q = query(collection(db, "posts"), orderBy("time", "desc"));
+
+    onSnapshot(q, (snapshot) => {
+        console.log("Live posts updated:", snapshot.size);
+
+        articlesContainer.innerHTML = "";
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+
+            const div = document.createElement("div");
+            div.className = "card";
+
+            div.innerHTML = `
+                <span class="tag">${data.category || ""}</span>
+                <h4>${data.title || ""}</h4>
+                <p>${data.content || ""}</p>
+                <small>By ${data.author || "Unknown"} | ${data.email || ""}</small>
+            `;
+
+            articlesContainer.appendChild(div);
+        });
+    }, (error) => {
+        console.error("Firestore error:", error);
+    });
+}
