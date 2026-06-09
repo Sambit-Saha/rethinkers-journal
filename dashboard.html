@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Dashboard - Rethinkers</title>
 
 <style>
@@ -8,8 +9,6 @@
     --bg-color: #f4f7f6;
     --text-color: #2c3e50;
     --accent-color: #27ae60;
-    --card-bg: #ffffff;
-    --border-color: #e0e0e0;
 }
 
 * {
@@ -33,10 +32,6 @@ header {
     padding: 15px;
     position: sticky;
     top: 0;
-}
-
-.left {
-    font-weight: bold;
 }
 
 .right {
@@ -108,7 +103,7 @@ form button {
 <body>
 
 <header>
-    <div class="left">Rethinkers Dashboard</div>
+    <div class="left"><b>Rethinkers Dashboard</b></div>
 
     <div class="right">
         <a href="login.html" class="login" id="loginBtn">Login</a>
@@ -125,32 +120,34 @@ form button {
 
     <hr>
 
-    <div id="publish">
+    <!-- CREATE POST -->
+    <section id="publish">
         <h3>Create Post</h3>
 
-        <form id="submission-form">
+        <form id="submission-form" autocomplete="off">
             <select id="sub-category">
                 <option>Research</option>
                 <option>Opinion</option>
                 <option>Field Report</option>
             </select>
 
-            <input id="sub-author" placeholder="Author Name">
-            <input id="sub-title" placeholder="Title">
-            <textarea id="sub-content" placeholder="Write..."></textarea>
+            <input id="sub-author" placeholder="Author Name" required>
+            <input id="sub-title" placeholder="Title" required>
+            <textarea id="sub-content" placeholder="Write..." required></textarea>
 
-            <button type="submit">Publish</button>
+            <button type="submit" class="post">Publish</button>
         </form>
-    </div>
+    </section>
 
     <hr>
 
+    <!-- LIVE POSTS -->
     <h3>Live Posts</h3>
     <div id="articles-container"></div>
 
 </div>
 
-<!-- IMPORTANT -->
+<!-- Firebase Logic -->
 <script type="module" src="app.js"></script>
 
 </body>

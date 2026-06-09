@@ -16,7 +16,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
-// 🔥 Firebase Config
+// =======================
+// FIREBASE CONFIG
+// =======================
 const firebaseConfig = {
   apiKey: "AIzaSyADuJpYlXLuX8dfmX2KSnlO0KJiqQ8Ba80",
   authDomain: "rethinkers-journal.firebaseapp.com",
@@ -27,7 +29,9 @@ const firebaseConfig = {
 };
 
 
+// =======================
 // INIT
+// =======================
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -36,15 +40,15 @@ let currentUser = null;
 
 
 // =======================
-// SAFE ELEMENT GETTER
+// SAFE ELEMENT REFERENCES
 // =======================
 const loginBtn = document.getElementById("loginBtn");
 const postBtn = document.getElementById("postBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const avatar = document.getElementById("avatar");
 
-const articlesContainer = document.getElementById("articles-container");
 const form = document.getElementById("submission-form");
+const articlesContainer = document.getElementById("articles-container");
 
 
 // =======================
@@ -73,7 +77,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 // =======================
-// LOGOUT (SAFE)
+// LOGOUT
 // =======================
 if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
@@ -83,26 +87,26 @@ if (logoutBtn) {
 
 
 // =======================
-// SCROLL TO POST (SAFE)
+// SCROLL TO POST SECTION
 // =======================
 if (postBtn) {
     postBtn.addEventListener("click", () => {
-        const publishSection = document.getElementById("publish");
-        if (publishSection) {
-            publishSection.scrollIntoView({ behavior: "smooth" });
+        const publish = document.getElementById("publish");
+        if (publish) {
+            publish.scrollIntoView({ behavior: "smooth" });
         }
     });
 }
 
 
 // =======================
-// POST SUBMIT (FIXED - MAIN BUG FIX)
+// POST SUBMIT (FIXED - MAIN ISSUE SOLVED)
 // =======================
 if (form) {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        console.log("Submit clicked");
+        console.log("Publish clicked");
 
         if (!currentUser) {
             alert("Please login first");
@@ -113,6 +117,12 @@ if (form) {
         const author = document.getElementById("sub-author")?.value;
         const title = document.getElementById("sub-title")?.value;
         const content = document.getElementById("sub-content")?.value;
+
+        // SAFETY CHECK (prevents undefined errors like 'sub is not defined')
+        if (!category || !author || !title || !content) {
+            alert("Please fill all fields");
+            return;
+        }
 
         try {
             await addDoc(collection(db, "posts"), {
@@ -125,11 +135,13 @@ if (form) {
             });
 
             console.log("Post published successfully");
+            alert("Post published!");
+
             form.reset();
 
         } catch (err) {
             console.error("ERROR publishing post:", err);
-            alert("Failed to publish post: " + err.message);
+            alert(err.message);
         }
     });
 }
@@ -143,6 +155,7 @@ if (articlesContainer) {
     const q = query(collection(db, "posts"), orderBy("time", "desc"));
 
     onSnapshot(q, (snapshot) => {
+
         console.log("Live posts updated:", snapshot.size);
 
         articlesContainer.innerHTML = "";
@@ -162,7 +175,8 @@ if (articlesContainer) {
 
             articlesContainer.appendChild(div);
         });
+
     }, (error) => {
-        console.error("Firestore error:", error);
+        console.error("Firestore read error:", error);
     });
 }
