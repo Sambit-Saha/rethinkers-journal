@@ -29,12 +29,24 @@ button{
     padding:12px 20px;
     cursor:pointer;
 }
+
+#status{
+    padding:10px;
+    margin-bottom:15px;
+    border-radius:5px;
+    background:#f2f2f2;
+}
 </style>
 
 </head>
+
 <body>
 
-<h1>Publish Article</h1>
+<h1>Admin Article Publisher</h1>
+
+<div id="status">
+Checking admin access...
+</div>
 
 <input id="title" placeholder="Article Title">
 
@@ -62,6 +74,11 @@ button{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
 import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
     getFirestore,
     collection,
     addDoc,
@@ -77,14 +94,56 @@ const firebaseConfig = {
   appId: "1:842949343385:web:adc684cddcdad6f4d72008"
 };
 
+const ADMIN_EMAIL = "sambitsaha007@gmail.com";
+
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-document.getElementById("publishBtn").addEventListener("click", async () => {
+let currentUser = null;
 
-    const title = document.getElementById("title").value.trim();
-    const topic = document.getElementById("topic").value;
-    const content = document.getElementById("content").value.trim();
+const statusDiv = document.getElementById("status");
+const publishBtn = document.getElementById("publishBtn");
+
+publishBtn.disabled = true;
+
+onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+        alert("Please login first");
+        window.location.href = "login.html";
+        return;
+    }
+
+    if (user.email !== ADMIN_EMAIL) {
+        alert("Access Denied");
+        window.location.href = "index.html";
+        return;
+    }
+
+    currentUser = user;
+
+    statusDiv.textContent =
+        "Logged in as Admin: " + user.email;
+
+    publishBtn.disabled = false;
+});
+
+publishBtn.addEventListener("click", async () => {
+
+    if (!currentUser) {
+        alert("Admin login required");
+        return;
+    }
+
+    const title =
+        document.getElementById("title").value.trim();
+
+    const topic =
+        document.getElementById("topic").value;
+
+    const content =
+        document.getElementById("content").value.trim();
 
     if (!title || !content) {
         alert("Please fill all fields");
@@ -97,7 +156,7 @@ document.getElementById("publishBtn").addEventListener("click", async () => {
             title,
             topic,
             content,
-            author: "Sambit Saha",
+            author: currentUser.email,
             createdAt: serverTimestamp()
         });
 
@@ -106,7 +165,7 @@ document.getElementById("publishBtn").addEventListener("click", async () => {
         document.getElementById("title").value = "";
         document.getElementById("content").value = "";
 
-    } catch(error) {
+    } catch (error) {
 
         console.error(error);
         alert(error.message);
