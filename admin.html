@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Article Publisher</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    box-sizing:border-box;
+}
+
+textarea{
+    min-height:300px;
+}
+
+button{
+    padding:12px 20px;
+    cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<h1>Publish Article</h1>
+
+<input id="title" placeholder="Article Title">
+
+<select id="topic">
+    <option>Artificial Intelligence</option>
+    <option>Climate & Environment</option>
+    <option>Human Psychology</option>
+    <option>Politics & Society</option>
+    <option>Technology</option>
+    <option>Daily News</option>
+    <option>Education</option>
+    <option>Scientific Discoveries</option>
+    <option>Universe & Space</option>
+    <option>Fun Facts</option>
+    <option>History</option>
+    <option>Philosophy</option>
+</select>
+
+<textarea id="content" placeholder="Write article here..."></textarea>
+
+<button id="publishBtn">Publish Article</button>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyADuJpYlXLuX8dfmX2KSnlO0KJiqQ8Ba80",
+  authDomain: "rethinkers-journal.firebaseapp.com",
+  projectId: "rethinkers-journal",
+  storageBucket: "rethinkers-journal.appspot.com",
+  messagingSenderId: "842949343385",
+  appId: "1:842949343385:web:adc684cddcdad6f4d72008"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("publishBtn").addEventListener("click", async () => {
+
+    const title = document.getElementById("title").value.trim();
+    const topic = document.getElementById("topic").value;
+    const content = document.getElementById("content").value.trim();
+
+    if (!title || !content) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    try {
+
+        await addDoc(collection(db, "articles"), {
+            title,
+            topic,
+            content,
+            author: "Sambit Saha",
+            createdAt: serverTimestamp()
+        });
+
+        alert("Article Published Successfully!");
+
+        document.getElementById("title").value = "";
+        document.getElementById("content").value = "";
+
+    } catch(error) {
+
+        console.error(error);
+        alert(error.message);
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
