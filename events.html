@@ -1,249 +1,37 @@
 
-<!DOCTYPE html>
-<html lang="en">
+<div class="event-card">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <div class="event-header">
 
-    <title>Featured Events | The Rethinkers Journal</title>
+        <h2>EVENTS WILL BE ANNOUNCED</h2>
 
-    <link rel="stylesheet" href="style.css">
+        <span class="event-status upcoming">
+            Upcoming
+        </span>
 
-    <style>
-        .event-card {
-            max-width: 900px;
-            margin: 35px auto;
-            padding: 30px;
-            background: #ffffff;
-            border-radius: 14px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            border-left: 5px solid #2563eb;
-        }
+    </div>
 
-        .event-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
+    <p>
+        Coming Soon...
+    </p>
 
-        .event-header h2 {
-            color: #172554;
-            margin: 0;
-        }
+    <div class="event-image-container">
 
-        .event-status {
-            padding: 7px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-        }
+        <a href="images/your-image.png"
+           target="_blank">
 
-        .upcoming {
-            background: #dcfce7;
-            color: #166534;
-        }
+            <img
+                src="images/your-image.png"
+                alt="Event Poster"
+                class="event-image"
+            >
 
-        .event-org {
-            color: #475569;
-            margin-bottom: 20px;
-        }
+        </a>
 
-        .event-info {
-            background: #f1f5f9;
-            padding: 18px;
-            border-radius: 10px;
-            margin: 22px 0;
-        }
+    </div>
 
-        .event-info p {
-            margin: 10px 0;
-            line-height: 1.6;
-        }
+    <div class="event-footer">
+        The Rethinkers
+    </div>
 
-        .deadline {
-            background: #fff7ed;
-            color: #9a3412;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-weight: 500;
-        }
-
-        .event-description {
-            line-height: 1.8;
-            color: #334155;
-        }
-
-        .event-footer {
-            margin-top: 25px;
-            padding-top: 18px;
-            border-top: 1px solid #e2e8f0;
-            text-align: center;
-            color: #1d4ed8;
-            font-weight: bold;
-        }
-
-        @media (max-width: 600px) {
-            .event-card {
-                margin: 20px 12px;
-                padding: 20px;
-            }
-
-            .event-header {
-                align-items: flex-start;
-            }
-        }
-    </style>
-
-</head>
-
-<body>
-
-    <!-- NAVBAR -->
-
-    <nav>
-
-        <div class="logo">THE RETHINKERS</div>
-
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="articles.html">Articles</a></li>
-            <li><a href="events.html">Featured Events</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="login.html" class="login-btn">Login</a></li>
-        </ul>
-
-    </nav>
-
-
-    <!-- PAGE HEADER -->
-
-    <header class="hero">
-
-        <h1>Featured Events</h1>
-
-        <h2>Workshops • Competitions • Seminars • Notices</h2>
-
-        <p>
-            Stay updated with important announcements, competitions,
-            workshops, campaigns and community activities organised by
-            <strong>The Rethinkers</strong>.
-        </p>
-
-    </header>
-
-
-    <!-- EVENTS SECTION -->
-
-    <section class="featured">
-
-        <div class="event-card">
-
-            <div class="event-header">
-
-                <h2>🌏 Vishwa Guru 2026</h2>
-
-                <span class="event-status upcoming">
-                    Upcoming
-                </span>
-
-            </div>
-
-
-            <p class="event-org">
-                <strong>Organised by The Rethinkers</strong>
-            </p>
-
-
-            <div class="event-description">
-
-                <p>
-                    Dear Members,
-                </p>
-
-                <p>
-                    <!-- Insert the official introduction and description
-                    of the Vishwa Guru event here. -->
-                </p>
-
-                <p>
-                    <!-- Insert additional information about the event here. -->
-                </p>
-
-            </div>
-
-
-            <div class="event-info">
-
-                <p>
-                    <strong>📌 Event:</strong>
-                    Vishwa Guru 2026
-                </p>
-
-                <p>
-                    <strong>🎯 Objective:</strong>
-                    <!-- Add the event objective -->
-                </p>
-
-                <p>
-                    <strong>👥 Eligibility:</strong>
-                    <!-- Add eligible participants -->
-                </p>
-
-                <p>
-                    <strong>📝 Participation:</strong>
-                    <!-- Add participation or submission instructions -->
-                </p>
-
-                <p>
-                    <strong>📅 Event Date:</strong>
-                    <!-- Add event date -->
-                </p>
-
-                <p>
-                    <strong>📨 Registration:</strong>
-                    <!-- Add registration instructions or contact details -->
-                </p>
-
-            </div>
-
-
-            <div class="deadline">
-
-                ⏰ Important Date:
-                <strong><!-- Add the deadline here --></strong>
-
-            </div>
-
-
-            <p class="event-description">
-                <!-- Add the closing message for participants. -->
-            </p>
-
-
-            <div class="event-footer">
-
-                🌍 Think Beyond Boundaries. Create a Better Future.
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- FOOTER -->
-
-    <footer>
-
-        © 2026 Rethinkers Group | Edited By - Sambit Saha
-
-    </footer>
-
-</body>
-
-</html>
+</div>
