@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +9,194 @@
     <title>Featured Events | The Rethinkers Journal</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* EVENTS PAGE */
+
+        body {
+            background: #f4f7f6;
+            color: #2c3e50;
+        }
+
+        .events-hero {
+            text-align: center;
+            padding: 55px 20px;
+            background: linear-gradient(135deg, #ffffff, #edf4f0);
+        }
+
+        .events-hero h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .events-hero h2 {
+            font-size: 19px;
+            color: #555;
+        }
+
+        .events-hero p {
+            max-width: 750px;
+            margin: 15px auto 0;
+        }
+
+        .events-container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .events-title {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 35px;
+        }
+
+        /* EVENT CARD */
+
+        .event-card {
+            background: white;
+            padding: 30px;
+            margin-bottom: 35px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .event-header h2 {
+            font-size: 25px;
+        }
+
+        .event-status {
+            padding: 6px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .upcoming {
+            background: #e0f5e8;
+            color: #219150;
+        }
+
+        .closed {
+            background: #eeeeee;
+            color: #666;
+        }
+
+        .event-card p {
+            margin-bottom: 15px;
+        }
+
+        .event-info {
+            background: #f5f8f6;
+            padding: 18px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .deadline {
+            background: #e8f5ec;
+            border-left: 5px solid #27ae60;
+            padding: 13px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .event-footer {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #24713c;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            margin-top: 25px;
+        }
+
+        /* POSTER EVENT */
+
+        .poster-card {
+            text-align: center;
+        }
+
+        .poster-description {
+            max-width: 750px;
+            margin: 0 auto 25px;
+            color: #555;
+        }
+
+        .poster-image {
+            display: block;
+            width: 100%;
+            max-width: 550px;
+            height: auto;
+            margin: 20px auto;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            transition: 0.3s ease;
+        }
+
+        .poster-image:hover {
+            transform: scale(1.01);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+        }
+
+        .poster-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 11px 22px;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .poster-link:hover {
+            background: #219150;
+            transform: translateY(-2px);
+        }
+
+        .poster-note {
+            font-size: 13px;
+            color: #888;
+            margin-top: 15px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 600px) {
+
+            .events-hero h1 {
+                font-size: 32px;
+            }
+
+            .event-card {
+                padding: 20px;
+            }
+
+            .event-header h2 {
+                font-size: 21px;
+            }
+
+            .events-title {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 <body>
@@ -28,25 +217,88 @@
 
 </nav>
 
+
 <!-- PAGE HEADER -->
 
-<header class="hero">
+<header class="events-hero">
 
     <h1>Featured Events</h1>
 
     <h2>Workshops • Competitions • Seminars • Notices</h2>
 
     <p>
-        Stay updated with all official announcements, competitions,
+        Stay updated with official announcements, competitions,
         workshops, campaigns and community activities organised by
         <strong>The Rethinkers</strong>.
     </p>
 
 </header>
 
-<!-- EVENTS -->
 
-<section class="featured">
+<!-- EVENTS SECTION -->
+
+<section class="events-container">
+
+    <h2 class="events-title">Latest Announcements</h2>
+
+
+    <!-- EVENT 1: VISHWA GURU POSTER -->
+
+    <div class="event-card poster-card">
+
+        <div class="event-header">
+
+            <h2>🇮🇳 Vishwa Guru? – Not Yet.</h2>
+
+            <span class="event-status upcoming">
+                Featured Publication
+            </span>
+
+        </div>
+
+        <p class="poster-description">
+
+            An India-focused report card examining democracy,
+            happiness, pollution and per-capita income.
+
+            Explore the poster and consider the questions
+            it raises about India's position in the world.
+
+        </p>
+
+        <a href="images/vishwa-guru-report-card-2026.png"
+           target="_blank"
+           rel="noopener noreferrer">
+
+            <img
+                src="images/vishwa-guru-report-card-2026.png"
+                alt="Vishwa Guru? Not Yet. India's Report Card 2026"
+                class="poster-image"
+            >
+
+        </a>
+
+        <a href="images/vishwa-guru-report-card-2026.png"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="poster-link">
+
+            View Full Poster
+
+        </a>
+
+        <p class="poster-note">
+
+            Published by The Rethinkers.
+            Refer to the sources listed on the original poster
+            when evaluating its claims.
+
+        </p>
+
+    </div>
+
+
+    <!-- EVENT 2: CLIMATE CHANGE ESSAY -->
 
     <div class="event-card">
 
@@ -54,13 +306,13 @@
 
             <h2>📢 Call for Essays on Local Climate Change</h2>
 
-            <span class="event-status upcoming">
-                Upcoming
+            <span class="event-status closed">
+                Closed
             </span>
 
         </div>
 
-        <p class="event-org">
+        <p>
             <strong>The Rethinkers</strong>
         </p>
 
@@ -69,9 +321,9 @@
         </p>
 
         <p>
-            We invite all <strong>Rethinkers</strong> to submit their views and
-            local experiences on the problems of climate change in their
-            communities.
+            We invite all <strong>Rethinkers</strong> to submit
+            their views and local experiences on the problems
+            of climate change in their communities.
         </p>
 
         <div class="event-info">
@@ -100,7 +352,7 @@
 
         <div class="deadline">
 
-            ⏰ Submission Deadline :
+            ⏰ Submission Deadline:
             <strong>20 July 2026</strong>
 
         </div>
@@ -123,7 +375,9 @@
 
     </div>
 
+
 </section>
+
 
 <!-- FOOTER -->
 
@@ -132,6 +386,7 @@
     © 2026 Rethinkers Group | Edited By - Sambit Saha
 
 </footer>
+
 
 </body>
 
